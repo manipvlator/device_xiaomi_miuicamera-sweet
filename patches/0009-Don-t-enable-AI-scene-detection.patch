@@ -1,0 +1,76 @@
+From 1e3c4c1c0d7a10866319dfb99ec9233eaea1c844 Mon Sep 17 00:00:00 2001
+From: lemezohaib <zhbkhan644@gmail.com>
+Date: Sat, 7 Nov 2026 19:05:08 +0500
+Subject: [PATCH 9/9] Don't enable AI scene detection
+
+The vendor camera HAL's AI scene detection (MiAILab camera_scene) runs
+MiAiCamera::DirtyCamera from libcamera_dirty.so, which reads past the end
+of a buffer on AOSP and crashes the camera provider a few seconds into
+preview (SIGSEGV in DirtyCamera::GetResult), even with the app's own lens
+dirty detection disabled.
+
+Stop sending the xiaomi.ai.asd / xiaomi.asd request tags altogether, the
+same as stock AOSP camera apps which don't trigger it. This loses the AI
+scene suggestions in MIUI Camera.
+
+---
+ .../camera2/compat/MiCameraCompatBaseImpl.smali   | 15 +++++++++++++++
+ 1 file changed, 15 insertions(+)
+
+diff --git a/smali_classes2/com/android/camera2/compat/MiCameraCompatBaseImpl.smali b/smali_classes2/com/android/camera2/compat/MiCameraCompatBaseImpl.smali
+index 7439f4a..5017f1f 100644
+--- a/smali_classes2/com/android/camera2/compat/MiCameraCompatBaseImpl.smali
++++ b/smali_classes2/com/android/camera2/compat/MiCameraCompatBaseImpl.smali
+@@ -22,6 +22,9 @@
+ .method public applyASDEnable(Landroid/hardware/camera2/CaptureRequest$Builder;Z)V
+     .locals 0
+ 
++    # Never enable AI scene detection, see commit message
++    return-void
++
+     .line 1
+     sget-object p0, Lcom/android/camera2/vendortag/CaptureRequestVendorTags;->ASD_ENABLE:Lcom/android/camera2/vendortag/VendorTag;
+ 
+@@ -86,6 +89,9 @@
+ .method public applyAiASDEnable(Landroid/hardware/camera2/CaptureRequest$Builder;Z)V
+     .locals 0
+ 
++    # Never enable AI scene detection, see commit message
++    return-void
++
+     .line 1
+     sget-object p0, Lcom/android/camera2/vendortag/CaptureRequestVendorTags;->AI_SCENE:Lcom/android/camera2/vendortag/VendorTag;
+ 
+@@ -150,6 +156,9 @@
+ .method public applyAiScenePeriod(Landroid/hardware/camera2/CaptureRequest$Builder;I)V
+     .locals 0
+ 
++    # Never enable AI scene detection, see commit message
++    return-void
++
+     .line 1
+     sget-object p0, Lcom/android/camera2/vendortag/CaptureRequestVendorTags;->AI_SCENE_PERIOD:Lcom/android/camera2/vendortag/VendorTag;
+ 
+@@ -212,6 +221,9 @@
+ .method public applyAsdAlgorithmEnable(Landroid/hardware/camera2/CaptureRequest$Builder;I)V
+     .locals 0
+ 
++    # Never enable AI scene detection, see commit message
++    return-void
++
+     .line 1
+     sget-object p0, Lcom/android/camera2/vendortag/CaptureRequestVendorTags;->ASD_ALGORITHM_ENABLE:Lcom/android/camera2/vendortag/VendorTag;
+ 
+@@ -227,6 +239,9 @@
+ .method public applyAsdDirtyEnable(Landroid/hardware/camera2/CaptureRequest$Builder;Z)V
+     .locals 0
+ 
++    # Never enable AI scene detection, see commit message
++    return-void
++
+     .line 1
+     sget-object p0, Lcom/android/camera2/vendortag/CaptureRequestVendorTags;->ASD_DIRTY_ENABLE:Lcom/android/camera2/vendortag/VendorTag;
+ 
+-- 
+2.43.0
+

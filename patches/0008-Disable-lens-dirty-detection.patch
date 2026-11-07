@@ -1,0 +1,36 @@
+From a7b90deb269699966e0cb6bdcd599d1180e00b74 Mon Sep 17 00:00:00 2001
+From: lemezohaib <zhbkhan644@gmail.com>
+Date: Sat, 7 Nov 2026 18:47:00 +0500
+Subject: [PATCH 8/8] Disable lens dirty detection
+
+With lens dirty detection enabled, the vendor camera HAL runs
+MiAiCamera::DirtyCamera from libcamera_dirty.so on preview frames, which
+reads past the end of the buffer on AOSP and crashes the camera provider
+(SIGSEGV in DirtyCamera::GetResult) a few seconds into preview.
+
+Report the feature as unsupported so MIUI Camera never enables the vendor
+tag; this also hides the lens cleaning hint setting.
+
+---
+ smali_classes2/com/android/camera2/CameraCapabilities.smali | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/smali_classes2/com/android/camera2/CameraCapabilities.smali b/smali_classes2/com/android/camera2/CameraCapabilities.smali
+index 92f5d4d..edee6b8 100644
+--- a/smali_classes2/com/android/camera2/CameraCapabilities.smali
++++ b/smali_classes2/com/android/camera2/CameraCapabilities.smali
+@@ -14773,6 +14773,11 @@
+ .method public isSupportLensDirtyDetect()Z
+     .locals 1
+ 
++    # libcamera_dirty.so in the vendor camera HAL crashes on our preview buffers
++    const/4 v0, 0x0
++
++    return v0
++
+     .line 1
+     sget-object v0, Lcom/android/camera2/vendortag/CameraCharacteristicsVendorTags;->SUPPORT_DIRTY_DETECT:Lcom/android/camera2/vendortag/VendorTag;
+ 
+-- 
+2.43.0
+
