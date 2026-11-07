@@ -15,3 +15,6 @@ binder_call(vendor_hal_camerapostproc_xiaomi_server, vendor_hal_camerapostproc_x
 binder_call(hal_camera_default, platform_app_36)
 
 dontaudit hal_camera_default default_prop:file read;
+
+# ArcSoft super night (libarcsoft_super_night_raw) runs on the NPU via HTA
+allow hal_camera_default vendor_npu_device:chr_file rw_file_perms;
