@@ -1,0 +1,76 @@
+From 691e30ee8ae646165f4517a5df831c6688937afc Mon Sep 17 00:00:00 2001
+From: lemezohaib <zhbkhan644@gmail.com>
+Date: Sat, 7 Nov 2026 14:28:14 +0500
+Subject: [PATCH 6/6] Add monochrome layer to launcher icon
+
+The stock adaptive launcher icon only has a bitmap foreground, so the
+launcher can't theme it when themed icons are enabled. Add an API 33+
+variant with a monochrome lens glyph, as a new mipmap-anydpi-v33 file
+so it applies regardless of apktool version.
+
+---
+ res/mipmap-anydpi-v33/ic_launcher_camera.xml  | 22 +++++++++++++++++++
+ .../ic_launcher_camera_cv.xml                 | 22 +++++++++++++++++++
+ 2 files changed, 44 insertions(+)
+ create mode 100644 res/mipmap-anydpi-v33/ic_launcher_camera.xml
+ create mode 100644 res/mipmap-anydpi-v33/ic_launcher_camera_cv.xml
+
+diff --git a/res/mipmap-anydpi-v33/ic_launcher_camera.xml b/res/mipmap-anydpi-v33/ic_launcher_camera.xml
+new file mode 100644
+index 0000000..6316665
+--- /dev/null
++++ b/res/mipmap-anydpi-v33/ic_launcher_camera.xml
+@@ -0,0 +1,22 @@
++<?xml version="1.0" encoding="utf-8"?>
++<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
++    <background android:drawable="@color/launcher_bg" />
++    <foreground android:drawable="@mipmap/launcher_ic_fg" />
++    <monochrome>
++        <vector
++            android:width="108dp"
++            android:height="108dp"
++            android:viewportWidth="108"
++            android:viewportHeight="108">
++            <!-- Lens: outer ring + inner glass -->
++            <path
++                android:fillColor="@android:color/white"
++                android:fillType="evenOdd"
++                android:pathData="M54,33A21,21 0,1 1,54 75A21,21 0,1 1,54 33ZM54,39.5A14.5,14.5 0,1 0,54 68.5A14.5,14.5 0,1 0,54 39.5ZM54,44.5A9.5,9.5 0,1 1,54 63.5A9.5,9.5 0,1 1,54 44.5Z" />
++            <!-- Dot -->
++            <path
++                android:fillColor="@android:color/white"
++                android:pathData="M74,30.5A3.5,3.5 0,1 1,74 37.5A3.5,3.5 0,1 1,74 30.5Z" />
++        </vector>
++    </monochrome>
++</adaptive-icon>
+diff --git a/res/mipmap-anydpi-v33/ic_launcher_camera_cv.xml b/res/mipmap-anydpi-v33/ic_launcher_camera_cv.xml
+new file mode 100644
+index 0000000..37039b2
+--- /dev/null
++++ b/res/mipmap-anydpi-v33/ic_launcher_camera_cv.xml
+@@ -0,0 +1,22 @@
++<?xml version="1.0" encoding="utf-8"?>
++<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">
++    <background android:drawable="@color/launcher_bg_cv" />
++    <foreground android:drawable="@mipmap/launcher_ic_fg_cv" />
++    <monochrome>
++        <vector
++            android:width="108dp"
++            android:height="108dp"
++            android:viewportWidth="108"
++            android:viewportHeight="108">
++            <!-- Lens: outer ring + inner glass -->
++            <path
++                android:fillColor="@android:color/white"
++                android:fillType="evenOdd"
++                android:pathData="M54,33A21,21 0,1 1,54 75A21,21 0,1 1,54 33ZM54,39.5A14.5,14.5 0,1 0,54 68.5A14.5,14.5 0,1 0,54 39.5ZM54,44.5A9.5,9.5 0,1 1,54 63.5A9.5,9.5 0,1 1,54 44.5Z" />
++            <!-- Dot -->
++            <path
++                android:fillColor="@android:color/white"
++                android:pathData="M74,30.5A3.5,3.5 0,1 1,74 37.5A3.5,3.5 0,1 1,74 30.5Z" />
++        </vector>
++    </monochrome>
++</adaptive-icon>
+-- 
+2.43.0
+

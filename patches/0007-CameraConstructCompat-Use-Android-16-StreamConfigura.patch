@@ -1,0 +1,107 @@
+From 1c1f59a6e9a2f588bb4b072d08187b09694337bf Mon Sep 17 00:00:00 2001
+From: lemezohaib <zhbkhan644@gmail.com>
+Date: Sat, 7 Nov 2026 16:31:41 +0500
+Subject: [PATCH 7/7] CameraConstructCompat: Use Android 16 StreamConfigurationMap
+ constructor
+
+On Android 14+ MIUI Camera reflects an 18-arg StreamConfigurationMap
+constructor (with jpegR) that stock Android 16 doesn't have, so building
+the stream config map fails with NoSuchMethodException unless
+frameworks/base carries a compat constructor.
+
+Look up the stock 21-arg constructor instead and pass null for the
+jpegR and heicUltraHDR arrays, which the framework treats as empty.
+
+---
+ .../camera2/CameraConstructCompat.smali       | 41 ++++++++++++++++---
+ 1 file changed, 35 insertions(+), 6 deletions(-)
+
+diff --git a/smali_classes2/com/xiaomi/compat/camera2/CameraConstructCompat.smali b/smali_classes2/com/xiaomi/compat/camera2/CameraConstructCompat.smali
+index 6042019..5c3cdb6 100644
+--- a/smali_classes2/com/xiaomi/compat/camera2/CameraConstructCompat.smali
++++ b/smali_classes2/com/xiaomi/compat/camera2/CameraConstructCompat.smali
+@@ -61,7 +61,8 @@
+ 
+     move-result v2
+ 
+-    const/16 v5, 0x12
++    # Android 16: 21-arg StreamConfigurationMap constructor
++    const/16 v5, 0x15
+ 
+     const/16 v6, 0xe
+ 
+@@ -160,19 +161,35 @@
+ 
+     aput-object v22, v2, v6
+ 
+-    const-class v22, [Landroid/hardware/camera2/params/HighSpeedVideoConfiguration;
++    const-class v22, [Landroid/hardware/camera2/params/StreamConfiguration;
+ 
+     aput-object v22, v2, v3
+ 
+-    const-class v22, Landroid/hardware/camera2/params/ReprocessFormatsMap;
++    const-class v22, [Landroid/hardware/camera2/params/StreamConfigurationDuration;
+ 
+     const/16 v21, 0x10
+ 
+     aput-object v22, v2, v21
+ 
++    const/16 v21, 0x11
++
++    aput-object v22, v2, v21
++
++    const-class v22, [Landroid/hardware/camera2/params/HighSpeedVideoConfiguration;
++
++    const/16 v21, 0x12
++
++    aput-object v22, v2, v21
++
++    const-class v22, Landroid/hardware/camera2/params/ReprocessFormatsMap;
++
++    const/16 v21, 0x13
++
++    aput-object v22, v2, v21
++
+     sget-object v22, Ljava/lang/Boolean;->TYPE:Ljava/lang/Class;
+ 
+-    const/16 v20, 0x11
++    const/16 v20, 0x14
+ 
+     aput-object v22, v2, v20
+ 
+@@ -303,10 +320,22 @@
+ 
+     aput-object v22, v2, v6
+ 
+-    aput-object p12, v2, v3
++    aput-object v22, v2, v3
+ 
+     const/16 v3, 0x10
+ 
++    aput-object v22, v2, v3
++
++    const/16 v3, 0x11
++
++    aput-object v22, v2, v3
++
++    const/16 v3, 0x12
++
++    aput-object p12, v2, v3
++
++    const/16 v3, 0x13
++
+     aput-object p13, v2, v3
+ 
+     .line 9
+@@ -314,7 +343,7 @@
+ 
+     move-result-object v3
+ 
+-    const/16 v4, 0x11
++    const/16 v4, 0x14
+ 
+     aput-object v3, v2, v4
+ 
+-- 
+2.43.0
+
